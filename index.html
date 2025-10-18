@@ -14,8 +14,11 @@
       /* Sizes */
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
+
       --control-h:66px;                 /* ≈1.5× height */
-      --chip-minw:100px;                /* readable chip width */
+      --chip-minw:50px;                 /* unit chip kept as you approved */
+      --col-min:160px;                  /* ↓ halve pill width via column size */
+      --col-max:180px;
     }
 
     *{box-sizing:border-box}
@@ -23,7 +26,7 @@
     header{padding:28px 20px;background:linear-gradient(180deg,var(--slb-blue-700),var(--slb-blue-900));color:#fff;box-shadow:var(--shadow)}
     h1{margin:0 0 6px;font-size:var(--fs-title);font-weight:800}
     .subtitle{margin:0;opacity:.9;font-size:13px}
-    main{max-width:1100px;margin:24px auto;padding:0 16px}
+    main{max-width:960px;margin:24px auto;padding:0 16px} /* slightly narrower container for balance */
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--ring);overflow:hidden}
     .card h2{margin:0;padding:14px 16px;font-size:15px;font-weight:700;color:var(--slb-blue-900);border-bottom:1px solid var(--ring);background:var(--slb-blue-100)}
     .card .body{padding:16px}
@@ -36,28 +39,29 @@
     .unit-toggle button.active{background:var(--slb-blue-100)}
     .switch{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ring);border-radius:12px;background:#fff;font-size:14px}
 
-    .fields-grid{display:grid;gap:18px;margin-top:8px;grid-template-columns:repeat(auto-fill,minmax(260px,320px));justify-content:space-between}
+    /* >>> Narrower pills via smaller column widths <<< */
+    .fields-grid{
+      display:grid; gap:14px; margin-top:8px;
+      grid-template-columns: repeat(auto-fill, minmax(var(--col-min), var(--col-max)));
+      justify-content:start;
+    }
     .field-group{display:flex;flex-direction:column;gap:6px}
     .field-group label{font-weight:700;font-size:var(--fs-label)}
 
-    /* ====== REMADE: inputs + unit chips use GRID for precise vertical centering ====== */
+    /* GRID pills for precise vertical centering */
     .field{
-      display:grid;
-      grid-template-columns: 1fr auto;      /* input grows, chip stays tight */
-      align-items:center;                    /* vertical centering */
-      height:var(--control-h);
-      background:#fff; border:1px solid var(--ring); border-radius:12px; overflow:hidden;
+      display:grid; grid-template-columns: 1fr auto; align-items:center;
+      height:var(--control-h); background:#fff; border:1px solid var(--ring); border-radius:12px; overflow:hidden;
       transition:border-color .15s ease;
     }
     .field:focus-within{border-color:var(--slb-blue-700)}
 
-    /* Input value: left-aligned, vertically centered, never under the chip */
+    /* INPUT: compact horizontally, centered vertically */
     .field input[type="number"]{
-      width:100%; min-width:0; border:0; outline:none;
-      height:100%;                         /* fill container for true centering */
-      padding:0 14px;                      /* clean side padding */
+      width:100%; min-width:0; border:0; outline:none; height:100%;
+      padding:0 8px;  /* compact */
       background:#fff; color:var(--ink-900);
-      font-size:var(--fs-body); font-weight:700; line-height:1; /* crisp baseline */
+      font-size:var(--fs-body); font-weight:700; line-height:1;
       text-align:left; font-variant-numeric:tabular-nums;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
     }
@@ -66,28 +70,24 @@
     input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
     input[type=number]{-moz-appearance:textfield}
 
-    /* Unit chips: same height, centered text, strong contrast */
+    /* UNIT CHIP: unchanged width settings, vertically centered */
     .suffix,.unit-select{
-      align-self:stretch;                   /* chip fills full height */
-      display:flex; align-items:center; justify-content:center;
-      padding:0 12px;                       /* compact */
-      border-left:1px solid var(--ring);
-      background:#EEF5FF;                   /* slightly darker for readability */
-      color:var(--slb-blue-900);
+      align-self:stretch; display:flex; align-items:center; justify-content:center;
+      padding:0 8px; border-left:1px solid var(--ring);
+      background:#EEF5FF; color:var(--slb-blue-900);
       font-weight:700; font-size:15px; white-space:nowrap; text-align:center;
     }
     .unit-select select{
       border:0; background:transparent; outline:none; cursor:pointer;
       height:100%; min-width:var(--chip-minw);
       font:inherit; color:inherit; line-height:1;
-      text-align:center; text-align-last:center;
-      appearance:none;                      /* consistent baseline across browsers */
+      text-align:center; text-align-last:center; appearance:none;
     }
-    /* ====== / REMADE ====== */
 
     .actions{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--ring);background:#FBFDFF}
     .btn{appearance:none;border:1px solid var(--slb-blue-700);color:#fff;background:var(--slb-blue-700);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
     .btn.secondary{background:#fff;color:var(--slb-blue-700)}
+
     details.preview{margin-top:16px}
     details.preview>summary{list-style:none;cursor:pointer;padding:14px 16px;background:var(--slb-blue-100);color:var(--slb-blue-900);font-weight:700;border:1px solid var(--ring);border-radius:var(--radius)}
     details.preview>summary::-webkit-details-marker{display:none}
