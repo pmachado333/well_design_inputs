@@ -1,4 +1,4 @@
-<!-- /index.html -->
+<!-- Well Design Inputs -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,7 @@
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
 
-      --control-h:66px; /* 1.5x */
+      --control-h:66px; /* I keep inputs tall for readability */
       --chip-minw:50px;
       --col-min:160px; --col-max:180px;
 
@@ -29,10 +29,10 @@
     .main-grid{
       max-width:1280px; margin:24px auto; padding:0 16px;
       display:grid; gap:16px;
-      grid-template-columns: minmax(0, 1fr) 460px; /* inputs dominate, schematic narrow */
+      grid-template-columns: minmax(0, 1fr) 460px;
       align-items:start;
     }
-    .main-grid.schem-hidden{ grid-template-columns: 1fr; } /* collapse to one column when hidden */
+    .main-grid.schem-hidden{ grid-template-columns: 1fr; }
     @media (max-width: 1100px){ .main-grid{ grid-template-columns: 1fr; } }
 
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--ring);overflow:hidden}
@@ -115,11 +115,9 @@
   </header>
 
   <div class="main-grid" id="mainGrid">
-    <!-- LEFT: Inputs -->
     <section class="card">
       <h2>Inputs</h2>
       <div class="body">
-        <!-- Unit system -->
         <div class="unit-row">
           <label>Unit System</label>
           <div class="unit-toggle" role="radiogroup" aria-label="Unit System">
@@ -129,21 +127,18 @@
           <p class="help">Sets units for length, cost per length, and DLS; values auto-convert.</p>
         </div>
 
-        <!-- Modelling -->
         <div class="unit-row" style="margin-top:0">
           <label>Modelling</label>
-          <label class="switch"><input type="checkbox" id="well_trajectory_modelling" checked /> Well trajectory modelling</label>
+          <label><input type="checkbox" id="well_trajectory_modelling" checked /> Well trajectory modelling</label>
           <p class="help">Enables the well trajectory optimizer. If switched off, well trajectories are generated as straight lines.</p>
         </div>
 
-        <!-- Schematic toggle (moved here) -->
         <div class="unit-row" style="margin-top:0">
           <label>Schematic</label>
           <button id="schemToggle" class="btn secondary sm" aria-pressed="true">Hide schematic</button>
           <p class="help">Show or hide the right-side well design schematic.</p>
         </div>
 
-        <!-- Fields -->
         <div class="fields-grid">
           <div class="field-group">
             <label for="well_unit_cost">Well unit cost</label>
@@ -203,7 +198,6 @@
       </div>
     </section>
 
-    <!-- RIGHT: Schematic card; entire card hides on toggle -->
     <section class="card" id="schemCard">
       <h2>Well Design Schematic</h2>
       <div class="schematic-wrap" id="schemWrap">
@@ -214,14 +208,12 @@
             </marker>
           </defs>
 
-          <!-- Wellhead (common) -->
           <g transform="translate(140,80)">
             <rect x="-8" y="-4" width="16" height="8" fill="#005FB8" rx="2"></rect>
             <rect x="-3" y="-18" width="6" height="14" fill="#005FB8" rx="1"></rect>
           </g>
           <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
 
-          <!-- ===== Mode A: SIMPLE (modelling OFF) ===== -->
           <g id="schem-simple">
             <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
@@ -236,7 +228,7 @@
             </g>
             <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
 
-            <!-- KOP + DLS wedge (on top) -->
+            <!-- I draw the wedge last so it sits above the wellpath -->
             <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
             <path class="wedge ns" d="M 140 260 L 140 292" />
             <path class="wedge ns" d="M 140 260 L 160 269" />
@@ -245,7 +237,6 @@
             <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
 
-          <!-- ===== Mode B: OPTIMIZED S-SHAPE (modelling ON) ===== -->
           <g id="schem-optim" style="display:none">
             <line class="ns" x1="140" y1="64" x2="430" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="285" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
@@ -265,7 +256,7 @@
             </g>
             <text class="halo" x="444" y="443" font-size="12" fill="#0B1324">Target</text>
 
-            <!-- KOP + DLS wedge (on top) -->
+            <!-- I align the wedge with the S-curve’s initial tangent so the angle matches the actual path -->
             <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
             <path class="wedge ns" d="M 140 260 L 140 292" />
             <path class="wedge ns" d="M 140 260 L 147 289" />
@@ -278,14 +269,12 @@
     </section>
   </div>
 
-  <!-- Bottom JSON preview (collapsed by default) -->
   <details class="preview" id="jsonDetails">
     <summary>JSON Preview (live)</summary>
     <pre id="jsonPreview" aria-live="polite"></pre>
   </details>
 
   <script>
-    /* =================== DATA / UOM / STATE =================== */
     const UOM = {
       length: {
         metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:m:",
@@ -313,12 +302,13 @@
     };
 
     const M_PER_FT = 0.3048, FT_PER_M = 1 / M_PER_FT;
+    // I convert DLS between °/30 m and °/100 ft so the severity means the same across systems
     const DLS_M_TO_FT = 100 / (30 * FT_PER_M);
     const DLS_FT_TO_M = 1 / DLS_M_TO_FT;
 
+    // I keep all current values in one mutable state for simple syncing
     const state = JSON.parse(JSON.stringify(defaults));
 
-    /* =================== Elements =================== */
     const metricBtn   = document.getElementById("metricBtn");
     const imperialBtn = document.getElementById("imperialBtn");
     const costInput   = document.getElementById("well_unit_cost");
@@ -339,11 +329,9 @@
     const schemCard   = document.getElementById('schemCard');
     const mainGrid    = document.getElementById('mainGrid');
 
-    /* =================== Helpers =================== */
     function clampNonNeg(n){ return Math.max(0, Number(n) || 0); }
     function roundNum(v,d){ const f=Math.pow(10,d); return Math.round((Number(v)||0)*f)/f; }
 
-    /* =================== JSON Build =================== */
     function buildPayload(){
       const isMetric = state.unitSystem === "metric";
       return {
@@ -366,10 +354,10 @@
       jsonPreview.textContent = JSON.stringify(buildPayload(), null, 2);
     }
 
-    /* =================== Unit system sync =================== */
     function setUnitSystem(target){
       if(target === state.unitSystem) return;
       const toImperial = target === "imperial";
+      // I convert the numbers so the user's values remain meaningful after switching units
       if(toImperial){
         state.horizontal_step_out *= FT_PER_M;
         state.kickoff_point      *= FT_PER_M;
@@ -385,9 +373,9 @@
       syncInputsFromState();
     }
 
-    /* =================== Schematic ON/OFF visibility =================== */
     function updateSchematicMode(){
       const on = !!state.well_trajectory_modelling;
+      // I just toggle groups instead of redrawing to keep the SVG crisp and predictable
       const simple = document.getElementById("schem-simple");
       const optim  = document.getElementById("schem-optim");
       if(simple && optim){
@@ -396,7 +384,6 @@
       }
     }
 
-    /* =================== Bind + Sync =================== */
     function syncInputsFromState(){
       trajChk.checked = state.well_trajectory_modelling;
 
@@ -459,8 +446,8 @@
       a.remove();
     });
 
-    /* ============== Schematic show/hide toggle (default ON) ============== */
     function setSchematicVisible(visible){
+      // I also collapse the grid to reclaim space when the schematic is hidden
       schemCard.style.display = visible ? '' : 'none';
       mainGrid.classList.toggle('schem-hidden', !visible);
       schemToggle.textContent = visible ? 'Hide schematic' : 'Show schematic';
@@ -473,8 +460,8 @@
 
     (function init(){
       Object.assign(state, JSON.parse(JSON.stringify(defaults)));
-      syncInputsFromState();     /* initial values + schematic mode */
-      setSchematicVisible(true); /* default ON */
+      syncInputsFromState();
+      setSchematicVisible(true);
     })();
   </script>
 </body>
