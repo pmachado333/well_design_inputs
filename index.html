@@ -13,7 +13,7 @@
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
 
-      --control-h:66px;
+      --control-h:66px; /* ~1.5x height */
       --chip-minw:50px;
       --col-min:160px; --col-max:180px;
 
@@ -60,9 +60,10 @@
       transition:border-color .15s ease;
     }
     .field:focus-within{border-color:var(--slb-blue-700)}
+
     .field input[type="number"]{
       width:100%; min-width:0; border:0; outline:none; height:100%;
-      padding:0 8px; background:#fff; color:var(--ink-900);
+      padding:0 8px; background:#fff; color:#0B1324;
       font-size:var(--fs-body); font-weight:700; line-height:1;
       text-align:left; font-variant-numeric:tabular-nums;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
@@ -75,7 +76,7 @@
     .suffix,.unit-select{
       align-self:stretch; display:flex; align-items:center; justify-content:center;
       padding:0 8px; border-left:1px solid var(--ring);
-      background:#EEF5FF; color:var(--slb-blue-900);
+      background:#EEF5FF; color:#003E7E;
       font-weight:700; font-size:15px; white-space:nowrap; text-align:center;
     }
     .unit-select select{
@@ -87,10 +88,10 @@
 
     .actions{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--ring);background:#FBFDFF}
     .btn{appearance:none;border:1px solid var(--slb-blue-700);color:#fff;background:var(--slb-blue-700);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
-    .btn.secondary{background:#fff;color:var(--slb-blue-700)}
+    .btn.secondary{background:#fff;color:#005FB8}
 
     details.preview{max-width:1280px;margin:16px auto 24px;padding:0 16px}
-    details.preview>summary{list-style:none;cursor:pointer;padding:14px 16px;background:var(--slb-blue-100);color:var(--slb-blue-900);font-weight:700;border:1px solid var(--ring);border-radius:var(--radius)}
+    details.preview>summary{list-style:none;cursor:pointer;padding:14px 16px;background:var(--slb-blue-100);color:#003E7E;font-weight:700;border:1px solid var(--ring);border-radius:var(--radius)}
     details.preview>summary::-webkit-details-marker{display:none}
     details.preview pre{margin:8px 0 0;padding:14px;font-size:12px;line-height:1.4;overflow:auto;white-space:pre;background:#0B1220;color:#E8F2FB;border-radius:10px}
 
@@ -102,6 +103,7 @@
 
     .ns{ vector-effect: non-scaling-stroke; }
     .halo{ paint-order: stroke; stroke:#fff; stroke-width:4px; }
+    .wedge{ stroke:#005FB8; stroke-width:3; stroke-linecap:round; fill:none; }
   </style>
 </head>
 <body>
@@ -115,6 +117,7 @@
     <section class="card">
       <h2>Inputs</h2>
       <div class="body">
+        <!-- Unit system -->
         <div class="unit-row">
           <label>Unit System</label>
           <div class="unit-toggle" role="radiogroup" aria-label="Unit System">
@@ -124,12 +127,14 @@
           <p class="help">Sets units for length, cost per length, and DLS; values auto-convert.</p>
         </div>
 
+        <!-- Modelling -->
         <div class="unit-row" style="margin-top:0">
           <label>Modelling</label>
           <label class="switch"><input type="checkbox" id="well_trajectory_modelling" checked /> Well trajectory modelling</label>
           <p class="help">Enables the well trajectory optimizer. If switched off, well trajectories are generated as straight lines.</p>
         </div>
 
+        <!-- Fields -->
         <div class="fields-grid">
           <div class="field-group">
             <label for="well_unit_cost">Well unit cost</label>
@@ -189,7 +194,7 @@
       </div>
     </section>
 
-    <!-- RIGHT: Static schematic -->
+    <!-- RIGHT: Static schematic (two modes) -->
     <section class="card">
       <h2>Schematic (not to scale)</h2>
       <div class="schematic-wrap">
@@ -200,43 +205,78 @@
             </marker>
           </defs>
 
-          <!-- Top dimension: Horizontal step-out -->
-          <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
-          <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
-
-          <!-- Wellhead icon centered on vertical line -->
+          <!-- Wellhead (common) -->
           <g transform="translate(140,80)">
             <rect x="-8" y="-4" width="16" height="8" fill="#005FB8" rx="2"></rect>
             <rect x="-3" y="-18" width="6" height="14" fill="#005FB8" rx="1"></rect>
           </g>
-          <!-- Wellhead label ABOVE, centered -->
           <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
 
-          <!-- Vertical leg -->
-          <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+          <!-- ===== Mode A: SIMPLE (modelling OFF) ===== -->
+          <g id="schem-simple">
+            <!-- Step-out dimension -->
+            <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+            <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
 
-          <!-- KOP point -->
-          <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
-          <!-- KOP label LEFT side -->
-          <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
+            <!-- Vertical leg -->
+            <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
-          <!-- DLS / inclination wedge at KOP -->
-          <path class="ns" d="M 140 260 L 140 230" stroke="#005FB8" stroke-width="2" fill="none"></path>
-          <path class="ns" d="M 140 260 L 168 272" stroke="#005FB8" stroke-width="2" fill="none"></path>
-          <path class="ns" d="M 140 236 A 24 24 0 0 1 161.8 270.1" stroke="#005FB8" stroke-width="2" fill="none"></path>
-          <!-- DLS label closer to the angle -->
-          <text class="halo" x="166" y="262" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+            <!-- Inclined leg -->
+            <path class="ns" d="M 140 260 L 520 440" stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
-          <!-- Inclined leg -->
-          <path class="ns" d="M 140 260 L 520 440" stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+            <!-- Target -->
+            <g transform="translate(520,440)">
+              <circle r="7" stroke="#005FB8" stroke-width="2" fill="none"></circle>
+              <line x1="-9" y1="0" x2="9" y2="0" stroke="#005FB8" stroke-width="2"></line>
+              <line x1="0" y1="-9" x2="0" y2="9" stroke="#005FB8" stroke-width="2"></line>
+            </g>
+            <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
 
-          <!-- Target -->
-          <g transform="translate(520,440)">
-            <circle r="7" stroke="#005FB8" stroke-width="2" fill="none"></circle>
-            <line x1="-9" y1="0" x2="9" y2="0" stroke="#005FB8" stroke-width="2"></line>
-            <line x1="0" y1="-9" x2="0" y2="9" stroke="#005FB8" stroke-width="2"></line>
+            <!-- KOP + DLS wedge (drawn LAST; correct direction: vertical down -> tangent) -->
+            <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
+            <!-- Reference ray: vertical down -->
+            <path class="wedge ns" d="M 140 260 L 140 292" />
+            <!-- Tangent ray: along the inclined leg (~20 right, ~9 down from KOP) -->
+            <path class="wedge ns" d="M 140 260 L 160 269" />
+            <!-- Arc between the two rays (radius ~22) -->
+            <path class="wedge ns" d="M 140 282 A 22 22 0 0 1 160 269" />
+            <!-- ↓↓↓ moved down from y=275 to y=285 -->
+            <text class="halo" x="158" y="285" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+            <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
-          <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
+
+          <!-- ===== Mode B: OPTIMIZED S-SHAPE (modelling ON) ===== -->
+          <g id="schem-optim" style="display:none">
+            <!-- Step-out dimension (shorter: to x=430) -->
+            <line class="ns" x1="140" y1="64" x2="430" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+            <text class="halo" x="285" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
+
+            <!-- Vertical leg -->
+            <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+
+            <!-- S-curve -->
+            <path class="ns" d="
+              M 140 260
+              C 160 345, 210 420, 280 440
+              C 340 457, 395 462, 430 455
+            " stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+
+            <!-- Target -->
+            <g transform="translate(430,455)">
+              <circle r="7" stroke="#005FB8" stroke-width="2" fill="none"></circle>
+              <line x1="-9" y1="0" x2="9" y2="0" stroke="#005FB8" stroke-width="2"></line>
+              <line x1="0" y1="-9" x2="0" y2="9" stroke="#005FB8" stroke-width="2"></line>
+            </g>
+            <text class="halo" x="444" y="443" font-size="12" fill="#0B1324">Target</text>
+
+            <!-- KOP + DLS wedge (drawn LAST; aligned to S-curve tangent) -->
+            <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
+            <path class="wedge ns" d="M 140 260 L 140 292" />
+            <path class="wedge ns" d="M 140 260 L 147 289" />
+            <path class="wedge ns" d="M 140 282 A 22 22 0 0 1 145 281.5" />
+            <text class="halo" x="152" y="286" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+            <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
+          </g>
         </svg>
       </div>
     </section>
@@ -249,7 +289,7 @@
   </details>
 
   <script>
-    /* ===== UOM + JSON logic (unchanged) ===== */
+    /* ===== UOM + JSON logic ===== */
     const UOM = {
       length: {
         metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:m:",
@@ -299,7 +339,7 @@
     const trajChk     = document.getElementById("well_trajectory_modelling");
 
     function clampNonNeg(n){ return Math.max(0, Number(n) || 0); }
-    function roundNum(v,d){ const f = Math.pow(10,d); return Math.round((Number(v)||0)*f)/f; }
+    function roundNum(v,d){ const f=Math.pow(10,d); return Math.round((Number(v)||0)*f)/f; }
 
     function buildPayload(){
       const isMetric = state.unitSystem === "metric";
@@ -341,6 +381,16 @@
       syncInputsFromState();
     }
 
+    function updateSchematicMode(){
+      const on = !!state.well_trajectory_modelling;
+      const simple = document.getElementById("schem-simple");
+      const optim  = document.getElementById("schem-optim");
+      if(simple && optim){
+        simple.style.display = on ? "none" : "block";
+        optim.style.display  = on ? "block" : "none";
+      }
+    }
+
     function syncInputsFromState(){
       trajChk.checked = state.well_trajectory_modelling;
 
@@ -363,6 +413,7 @@
       imperialBtn.setAttribute("aria-pressed", String(!isMetric));
 
       renderJSON();
+      updateSchematicMode();
     }
 
     metricBtn.addEventListener("click", ()=> setUnitSystem("metric"));
@@ -378,7 +429,12 @@
     hsoInput.addEventListener("input", (e)=>{ state.horizontal_step_out = clampNonNeg(e.target.value); renderJSON(); });
     kopInput.addEventListener("input", (e)=>{ state.kickoff_point = clampNonNeg(e.target.value); renderJSON(); });
     dlsInput.addEventListener("input", (e)=>{ state.dls_limit = clampNonNeg(e.target.value); renderJSON(); });
-    trajChk.addEventListener("change", (e)=>{ state.well_trajectory_modelling = !!e.target.checked; renderJSON(); });
+
+    trajChk.addEventListener("change", (e)=>{
+      state.well_trajectory_modelling = !!e.target.checked;
+      renderJSON();
+      updateSchematicMode();
+    });
 
     resetBtn.addEventListener("click", ()=>{
       Object.assign(state, JSON.parse(JSON.stringify(defaults)));
