@@ -7,28 +7,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root{
-      /* SLB palette */
       --slb-blue-900:#003E7E; --slb-blue-700:#005FB8; --slb-blue-100:#E8F2FB;
       --ink-900:#0B1324; --ink-500:#6B7280; --bg:#F7FAFD; --card:#FFFFFF; --ring:#CFE3F9;
 
-      /* Sizes & type */
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
 
-      /* Field controls */
-      --control-h:66px;                 /* ~1.5× height */
-      --chip-minw:50px;                 /* unit chip width approved */
-      --col-min:160px;                  /* narrow pill width via column size */
-      --col-max:180px;
+      --control-h:66px;
+      --chip-minw:50px;
+      --col-min:160px; --col-max:180px;
+
+      --schematic-h:480px;
     }
 
     *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink-900);background:#F7FAFD;font-size:var(--fs-body)}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink-900);background:var(--bg);font-size:var(--fs-body)}
     header{padding:28px 20px;background:linear-gradient(180deg,var(--slb-blue-700),var(--slb-blue-900));color:#fff;box-shadow:var(--shadow)}
     h1{margin:0 0 6px;font-size:var(--fs-title);font-weight:800}
     .subtitle{margin:0;opacity:.9;font-size:13px}
 
-    main{max-width:960px;margin:24px auto;padding:0 16px}
+    .main-grid{
+      max-width:1280px; margin:24px auto; padding:0 16px;
+      display:grid; gap:16px;
+      grid-template-columns: minmax(0, 1fr) 640px;
+      align-items:start;
+    }
+    @media (max-width: 1100px){ .main-grid{ grid-template-columns: 1fr; } }
+
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--ring);overflow:hidden}
     .card h2{margin:0;padding:14px 16px;font-size:15px;font-weight:700;color:var(--slb-blue-900);border-bottom:1px solid var(--ring);background:var(--slb-blue-100)}
     .card .body{padding:16px}
@@ -37,12 +42,10 @@
     .unit-row label{font-weight:700;font-size:var(--fs-label)}
     .help{margin:4px 0 0;font-size:var(--fs-help);color:var(--ink-500);flex-basis:100%}
 
-    /* Unit system toggle */
     .unit-toggle{display:flex;gap:6px;background:#fff;border:1px solid var(--ring);border-radius:999px;padding:6px}
     .unit-toggle button{border:0;padding:10px 14px;border-radius:999px;background:transparent;cursor:pointer;font-weight:700;color:var(--slb-blue-900);font-size:14px}
     .unit-toggle button.active{background:var(--slb-blue-100)}
 
-    /* Grid: narrower columns for tighter pills */
     .fields-grid{
       display:grid; gap:14px; margin-top:8px;
       grid-template-columns: repeat(auto-fill, minmax(var(--col-min), var(--col-max)));
@@ -51,19 +54,15 @@
     .field-group{display:flex;flex-direction:column;gap:6px}
     .field-group label{font-weight:700;font-size:var(--fs-label)}
 
-    /* Field pill with vertical centering (grid) */
     .field{
       display:grid; grid-template-columns: 1fr auto; align-items:center;
       height:var(--control-h); background:#fff; border:1px solid var(--ring); border-radius:12px; overflow:hidden;
       transition:border-color .15s ease;
     }
     .field:focus-within{border-color:var(--slb-blue-700)}
-
-    /* Input */
     .field input[type="number"]{
       width:100%; min-width:0; border:0; outline:none; height:100%;
-      padding:0 8px;
-      background:#fff; color:var(--ink-900);
+      padding:0 8px; background:#fff; color:var(--ink-900);
       font-size:var(--fs-body); font-weight:700; line-height:1;
       text-align:left; font-variant-numeric:tabular-nums;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
@@ -73,7 +72,6 @@
     input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
     input[type=number]{-moz-appearance:textfield}
 
-    /* Unit chip */
     .suffix,.unit-select{
       align-self:stretch; display:flex; align-items:center; justify-content:center;
       padding:0 8px; border-left:1px solid var(--ring);
@@ -91,11 +89,19 @@
     .btn{appearance:none;border:1px solid var(--slb-blue-700);color:#fff;background:var(--slb-blue-700);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
     .btn.secondary{background:#fff;color:var(--slb-blue-700)}
 
-    /* Bottom collapsible JSON preview */
-    details.preview{margin-top:16px}
+    details.preview{max-width:1280px;margin:16px auto 24px;padding:0 16px}
     details.preview>summary{list-style:none;cursor:pointer;padding:14px 16px;background:var(--slb-blue-100);color:var(--slb-blue-900);font-weight:700;border:1px solid var(--ring);border-radius:var(--radius)}
     details.preview>summary::-webkit-details-marker{display:none}
     details.preview pre{margin:8px 0 0;padding:14px;font-size:12px;line-height:1.4;overflow:auto;white-space:pre;background:#0B1220;color:#E8F2FB;border-radius:10px}
+
+    .schematic-wrap{padding:12px}
+    #schematic{
+      width:100%; height:var(--schematic-h); display:block; background:#fff;
+      border:1px solid var(--ring); border-radius:12px;
+    }
+
+    .ns{ vector-effect: non-scaling-stroke; }
+    .halo{ paint-order: stroke; stroke:#fff; stroke-width:4px; }
   </style>
 </head>
 <body>
@@ -104,11 +110,11 @@
     <p class="subtitle">Prototype Version</p>
   </header>
 
-  <main>
+  <div class="main-grid">
+    <!-- LEFT: Inputs -->
     <section class="card">
       <h2>Inputs</h2>
       <div class="body">
-        <!-- Unit system -->
         <div class="unit-row">
           <label>Unit System</label>
           <div class="unit-toggle" role="radiogroup" aria-label="Unit System">
@@ -118,16 +124,13 @@
           <p class="help">Sets units for length, cost per length, and DLS; values auto-convert.</p>
         </div>
 
-        <!-- Modelling toggle -->
         <div class="unit-row" style="margin-top:0">
           <label>Modelling</label>
           <label class="switch"><input type="checkbox" id="well_trajectory_modelling" checked /> Well trajectory modelling</label>
           <p class="help">Enables the well trajectory optimizer. If switched off, well trajectories are generated as straight lines.</p>
         </div>
 
-        <!-- Fields -->
         <div class="fields-grid">
-          <!-- Well unit cost -->
           <div class="field-group">
             <label for="well_unit_cost">Well unit cost</label>
             <div class="field">
@@ -142,7 +145,6 @@
             <div class="help">Average total cost per unit of drilled and completed length.</div>
           </div>
 
-          <!-- Tubing size -->
           <div class="field-group">
             <label for="tubing_size">Tubing size</label>
             <div class="field">
@@ -152,7 +154,6 @@
             <div class="help">Nominal outer diameter of the production tubing (inches).</div>
           </div>
 
-          <!-- Horizontal step out -->
           <div class="field-group">
             <label for="horizontal_step_out">Horizontal step-out</label>
             <div class="field">
@@ -162,7 +163,6 @@
             <div class="help">Horizontal map distance from the wellhead to the target location.</div>
           </div>
 
-          <!-- Kickoff point -->
           <div class="field-group">
             <label for="kickoff_point">Kickoff point</label>
             <div class="field">
@@ -172,7 +172,6 @@
             <div class="help">Measured depth where the wellpath starts the build (curved) section.</div>
           </div>
 
-          <!-- DLS limit -->
           <div class="field-group">
             <label for="dls_limit">DLS limit</label>
             <div class="field">
@@ -182,40 +181,91 @@
             <div class="help">Maximum allowed dogleg severity of the trajectory.</div>
           </div>
         </div>
-      </div>
 
-      <div class="actions">
-        <button id="resetBtn" class="btn secondary" type="button">Reset to defaults</button>
-        <button id="downloadBtn" class="btn" type="button">Download JSON</button>
+        <div class="actions">
+          <button id="resetBtn" class="btn secondary" type="button">Reset to defaults</button>
+          <button id="downloadBtn" class="btn" type="button">Download JSON</button>
+        </div>
       </div>
     </section>
 
-    <!-- Bottom collapsible JSON preview (collapsed by default) -->
-    <details class="preview" id="jsonDetails">
-      <summary>JSON Preview (live)</summary>
-      <pre id="jsonPreview" aria-live="polite"></pre>
-    </details>
-  </main>
+    <!-- RIGHT: Static schematic -->
+    <section class="card">
+      <h2>Schematic (not to scale)</h2>
+      <div class="schematic-wrap">
+        <svg id="schematic" viewBox="0 0 620 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Well trajectory schematic">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 Z" fill="#005FB8"></path>
+            </marker>
+          </defs>
+
+          <!-- Top dimension: Horizontal step-out -->
+          <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+          <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
+
+          <!-- Wellhead icon centered on vertical line -->
+          <g transform="translate(140,80)">
+            <rect x="-8" y="-4" width="16" height="8" fill="#005FB8" rx="2"></rect>
+            <rect x="-3" y="-18" width="6" height="14" fill="#005FB8" rx="1"></rect>
+          </g>
+          <!-- Wellhead label ABOVE, centered -->
+          <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
+
+          <!-- Vertical leg -->
+          <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+
+          <!-- KOP point -->
+          <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
+          <!-- KOP label LEFT side -->
+          <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
+
+          <!-- DLS / inclination wedge at KOP -->
+          <path class="ns" d="M 140 260 L 140 230" stroke="#005FB8" stroke-width="2" fill="none"></path>
+          <path class="ns" d="M 140 260 L 168 272" stroke="#005FB8" stroke-width="2" fill="none"></path>
+          <path class="ns" d="M 140 236 A 24 24 0 0 1 161.8 270.1" stroke="#005FB8" stroke-width="2" fill="none"></path>
+          <!-- DLS label closer to the angle -->
+          <text class="halo" x="166" y="262" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+
+          <!-- Inclined leg -->
+          <path class="ns" d="M 140 260 L 520 440" stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+
+          <!-- Target -->
+          <g transform="translate(520,440)">
+            <circle r="7" stroke="#005FB8" stroke-width="2" fill="none"></circle>
+            <line x1="-9" y1="0" x2="9" y2="0" stroke="#005FB8" stroke-width="2"></line>
+            <line x1="0" y1="-9" x2="0" y2="9" stroke="#005FB8" stroke-width="2"></line>
+          </g>
+          <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <!-- Bottom JSON preview (collapsed by default) -->
+  <details class="preview" id="jsonDetails">
+    <summary>JSON Preview (live)</summary>
+    <pre id="jsonPreview" aria-live="polite"></pre>
+  </details>
 
   <script>
-    // UOM catalog
+    /* ===== UOM + JSON logic (unchanged) ===== */
     const UOM = {
       length: {
         metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:m:",
-        imperial: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:ft:"
+        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:ft:"
       },
       cost: {
         metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fm:",
-        imperial: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fft:"
+        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fft:"
       },
       tubingInch: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:in:",
       dls: {
         metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:1%2F30%20dega%2Fm:",
-        imperial: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:0.01%20dega%2Fft:"
+        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:0.01%20dega%2Fft:"
       }
     };
 
-    // Defaults (DLS now 4)
     const defaults = {
       unitSystem: "metric",
       well_trajectory_modelling: true,
@@ -226,33 +276,70 @@
       dls_limit: 4
     };
 
-    // Conversions
-    const M_PER_FT = 0.3048;
-    const FT_PER_M = 1 / M_PER_FT;
-    const DLS_M_TO_FT = 100 / (30 * FT_PER_M); // °/30m -> °/100ft
+    const M_PER_FT = 0.3048, FT_PER_M = 1 / M_PER_FT;
+    const DLS_M_TO_FT = 100 / (30 * FT_PER_M);
     const DLS_FT_TO_M = 1 / DLS_M_TO_FT;
 
-    // State
     const state = JSON.parse(JSON.stringify(defaults));
 
-    // Elements
-    const metricBtn = document.getElementById("metricBtn");
+    const metricBtn   = document.getElementById("metricBtn");
     const imperialBtn = document.getElementById("imperialBtn");
-    const costInput = document.getElementById("well_unit_cost");
+    const costInput   = document.getElementById("well_unit_cost");
     const costUnitSel = document.getElementById("well_cost_unit");
     const tubingInput = document.getElementById("tubing_size");
-    const hsoInput = document.getElementById("horizontal_step_out");
-    const kopInput = document.getElementById("kickoff_point");
-    const dlsInput = document.getElementById("dls_limit");
+    const hsoInput    = document.getElementById("horizontal_step_out");
+    const kopInput    = document.getElementById("kickoff_point");
+    const dlsInput    = document.getElementById("dls_limit");
     const jsonPreview = document.getElementById("jsonPreview");
-    const resetBtn = document.getElementById("resetBtn");
+    const resetBtn    = document.getElementById("resetBtn");
     const downloadBtn = document.getElementById("downloadBtn");
-    const hsoUnit = document.getElementById("hso_unit");
-    const kopUnit = document.getElementById("kop_unit");
-    const dlsUnit = document.getElementById("dls_unit");
-    const trajChk = document.getElementById("well_trajectory_modelling");
+    const hsoUnit     = document.getElementById("hso_unit");
+    const kopUnit     = document.getElementById("kop_unit");
+    const dlsUnit     = document.getElementById("dls_unit");
+    const trajChk     = document.getElementById("well_trajectory_modelling");
 
     function clampNonNeg(n){ return Math.max(0, Number(n) || 0); }
+    function roundNum(v,d){ const f = Math.pow(10,d); return Math.round((Number(v)||0)*f)/f; }
+
+    function buildPayload(){
+      const isMetric = state.unitSystem === "metric";
+      return {
+        well_trajectory_modelling: !!state.well_trajectory_modelling,
+        allow_incomplete_dev_concept: false,
+        multilateral_well_modelling: { multilateral_well_design: false },
+        well_unit_cost: roundNum(state.well_unit_cost, 2),
+        well_unit_cost_measurement: isMetric ? UOM.cost.metric : UOM.cost.imperial,
+        tubing_size: roundNum(state.tubing_size, 3),
+        tubing_size_measurement: UOM.tubingInch,
+        horizontal_step_out: roundNum(state.horizontal_step_out, 2),
+        horizontal_step_out_measurement: isMetric ? UOM.length.metric : UOM.length.imperial,
+        kickoff_point: roundNum(state.kickoff_point, 2),
+        kickoff_point_measurement: isMetric ? UOM.length.metric : UOM.length.imperial,
+        dls_limit: roundNum(state.dls_limit, 3),
+        dls_limit_measurement: isMetric ? UOM.dls.metric : UOM.dls.imperial
+      };
+    }
+    function renderJSON(){
+      jsonPreview.textContent = JSON.stringify(buildPayload(), null, 2);
+    }
+
+    function setUnitSystem(target){
+      if(target === state.unitSystem) return;
+      const toImperial = target === "imperial";
+      if(toImperial){
+        state.horizontal_step_out *= FT_PER_M;
+        state.kickoff_point      *= FT_PER_M;
+        state.well_unit_cost     *= M_PER_FT;
+        state.dls_limit          *= DLS_M_TO_FT;
+      }else{
+        state.horizontal_step_out *= M_PER_FT;
+        state.kickoff_point      *= M_PER_FT;
+        state.well_unit_cost     *= FT_PER_M;
+        state.dls_limit          *= DLS_FT_TO_M;
+      }
+      state.unitSystem = target;
+      syncInputsFromState();
+    }
 
     function syncInputsFromState(){
       trajChk.checked = state.well_trajectory_modelling;
@@ -278,53 +365,6 @@
       renderJSON();
     }
 
-    function buildPayload(){
-      const isMetric = state.unitSystem === "metric";
-      return {
-        well_trajectory_modelling: !!state.well_trajectory_modelling,
-        allow_incomplete_dev_concept: false, // fixed as requested
-        multilateral_well_modelling: { multilateral_well_design: false },
-        well_unit_cost: roundNum(state.well_unit_cost, 2),
-        well_unit_cost_measurement: isMetric ? UOM.cost.metric : UOM.cost.imperial,
-        tubing_size: roundNum(state.tubing_size, 3),
-        tubing_size_measurement: UOM.tubingInch,
-        horizontal_step_out: roundNum(state.horizontal_step_out, 2),
-        horizontal_step_out_measurement: isMetric ? UOM.length.metric : UOM.length.imperial,
-        kickoff_point: roundNum(state.kickoff_point, 2),
-        kickoff_point_measurement: isMetric ? UOM.length.metric : UOM.length.imperial,
-        dls_limit: roundNum(state.dls_limit, 3),
-        dls_limit_measurement: isMetric ? UOM.dls.metric : UOM.dls.imperial
-      };
-    }
-
-    function roundNum(v, digits){
-      const f = Math.pow(10, digits);
-      return Math.round((Number(v)||0) * f) / f;
-    }
-
-    function renderJSON(){
-      jsonPreview.textContent = JSON.stringify(buildPayload(), null, 2);
-    }
-
-    function setUnitSystem(target){
-      if(target === state.unitSystem) return;
-      const toImperial = target === "imperial";
-      if(toImperial){
-        state.horizontal_step_out *= FT_PER_M;
-        state.kickoff_point     *= FT_PER_M;
-        state.well_unit_cost    *= M_PER_FT;    // USD/m -> USD/ft
-        state.dls_limit         *= DLS_M_TO_FT; // °/30m -> °/100ft
-      }else{
-        state.horizontal_step_out *= M_PER_FT;
-        state.kickoff_point     *= M_PER_FT;
-        state.well_unit_cost    *= FT_PER_M;    // USD/ft -> USD/m
-        state.dls_limit         *= DLS_FT_TO_M; // °/100ft -> °/30m
-      }
-      state.unitSystem = target;
-      syncInputsFromState();
-    }
-
-    // Events
     metricBtn.addEventListener("click", ()=> setUnitSystem("metric"));
     imperialBtn.addEventListener("click", ()=> setUnitSystem("imperial"));
 
@@ -357,7 +397,6 @@
       a.remove();
     });
 
-    // Init
     (function init(){
       Object.assign(state, JSON.parse(JSON.stringify(defaults)));
       syncInputsFromState();
