@@ -13,7 +13,7 @@
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
 
-      --control-h:66px; /* I keep inputs tall for readability */
+      --control-h:66px;
       --chip-minw:50px;
       --col-min:160px; --col-max:180px;
 
@@ -208,12 +208,13 @@
             </marker>
           </defs>
 
+          <!-- Wellhead symbol -->
           <g transform="translate(140,80)">
             <rect x="-8" y="-4" width="16" height="8" fill="#005FB8" rx="2"></rect>
             <rect x="-3" y="-18" width="6" height="14" fill="#005FB8" rx="1"></rect>
           </g>
-          <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
 
+          <!-- ===== Mode A: SIMPLE (modelling OFF) ===== -->
           <g id="schem-simple">
             <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
@@ -228,7 +229,6 @@
             </g>
             <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
 
-            <!-- I draw the wedge last so it sits above the wellpath -->
             <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
             <path class="wedge ns" d="M 140 260 L 140 292" />
             <path class="wedge ns" d="M 140 260 L 160 269" />
@@ -237,15 +237,17 @@
             <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
 
+          <!-- ===== Mode B: OPTIMIZED S-SHAPE (modelling ON) ===== -->
           <g id="schem-optim" style="display:none">
             <line class="ns" x1="140" y1="64" x2="430" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="285" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
 
             <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
+            <!-- I steepen the first control to increase the initial tangent angle -->
             <path class="ns" d="
               M 140 260
-              C 160 345, 210 420, 280 440
+              C 195 340, 210 420, 280 440
               C 340 457, 395 462, 430 455
             " stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
@@ -256,14 +258,17 @@
             </g>
             <text class="halo" x="444" y="443" font-size="12" fill="#0B1324">Target</text>
 
-            <!-- I align the wedge with the S-curve’s initial tangent so the angle matches the actual path -->
             <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
-            <path class="wedge ns" d="M 140 260 L 140 292" />
-            <path class="wedge ns" d="M 140 260 L 147 289" />
-            <path class="wedge ns" d="M 140 282 A 22 22 0 0 1 145 281.5" />
-            <text class="halo" x="152" y="286" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+            <path class="wedge ns" d="M 140 260 L 140 294" />
+            <!-- Tangent ray uses (55,80); I match its slope with dx≈22 for dy≈32 -->
+            <path class="wedge ns" d="M 140 260 L 162 292" />
+            <path class="wedge ns" d="M 140 284 A 24 24 0 0 1 158 292" />
+            <text class="halo" x="168" y="298" font-size="11" fill="#003E7E">Inclination (DLS)</text>
             <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
+
+          <!-- I draw the Wellhead label last so it always sits on top -->
+          <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
         </svg>
       </div>
     </section>
@@ -302,11 +307,9 @@
     };
 
     const M_PER_FT = 0.3048, FT_PER_M = 1 / M_PER_FT;
-    // I convert DLS between °/30 m and °/100 ft so the severity means the same across systems
     const DLS_M_TO_FT = 100 / (30 * FT_PER_M);
     const DLS_FT_TO_M = 1 / DLS_M_TO_FT;
 
-    // I keep all current values in one mutable state for simple syncing
     const state = JSON.parse(JSON.stringify(defaults));
 
     const metricBtn   = document.getElementById("metricBtn");
@@ -357,7 +360,6 @@
     function setUnitSystem(target){
       if(target === state.unitSystem) return;
       const toImperial = target === "imperial";
-      // I convert the numbers so the user's values remain meaningful after switching units
       if(toImperial){
         state.horizontal_step_out *= FT_PER_M;
         state.kickoff_point      *= FT_PER_M;
@@ -375,7 +377,6 @@
 
     function updateSchematicMode(){
       const on = !!state.well_trajectory_modelling;
-      // I just toggle groups instead of redrawing to keep the SVG crisp and predictable
       const simple = document.getElementById("schem-simple");
       const optim  = document.getElementById("schem-optim");
       if(simple && optim){
@@ -447,7 +448,6 @@
     });
 
     function setSchematicVisible(visible){
-      // I also collapse the grid to reclaim space when the schematic is hidden
       schemCard.style.display = visible ? '' : 'none';
       mainGrid.classList.toggle('schem-hidden', !visible);
       schemToggle.textContent = visible ? 'Hide schematic' : 'Show schematic';
