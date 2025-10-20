@@ -1,4 +1,4 @@
-<!-- Well Design Inputs -->
+<!-- /index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,103 +9,52 @@
     :root{
       --slb-blue-900:#003E7E; --slb-blue-700:#005FB8; --slb-blue-100:#E8F2FB;
       --ink-900:#0B1324; --ink-500:#6B7280; --bg:#F7FAFD; --card:#FFFFFF; --ring:#CFE3F9;
-
       --radius:14px; --shadow:0 4px 14px rgba(0,0,0,.08);
       --fs-title:26px; --fs-body:16px; --fs-label:13px; --fs-help:12px;
-
-      --control-h:66px;
-      --chip-minw:50px;
-      --col-min:160px; --col-max:180px;
-
+      --control-h:66px; --chip-minw:50px; --col-min:160px; --col-max:180px;
       --schematic-h:480px;
     }
-
     *{box-sizing:border-box}
     body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink-900);background:var(--bg);font-size:var(--fs-body)}
     header{padding:28px 20px;background:linear-gradient(180deg,var(--slb-blue-700),var(--slb-blue-900));color:#fff;box-shadow:var(--shadow)}
     h1{margin:0 0 6px;font-size:var(--fs-title);font-weight:800}
     .subtitle{margin:0;opacity:.9;font-size:13px}
-
-    .main-grid{
-      max-width:1280px; margin:24px auto; padding:0 16px;
-      display:grid; gap:16px;
-      grid-template-columns: minmax(0, 1fr) 460px;
-      align-items:start;
-    }
-    .main-grid.schem-hidden{ grid-template-columns: 1fr; }
-    @media (max-width: 1100px){ .main-grid{ grid-template-columns: 1fr; } }
-
+    .main-grid{max-width:1280px;margin:24px auto;padding:0 16px;display:grid;gap:16px;grid-template-columns:minmax(0,1fr) 460px;align-items:start}
+    .main-grid.schem-hidden{grid-template-columns:1fr}
+    @media (max-width:1100px){.main-grid{grid-template-columns:1fr}}
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--ring);overflow:hidden}
     .card h2{margin:0;padding:14px 16px;font-size:15px;font-weight:700;color:var(--slb-blue-900);border-bottom:1px solid var(--ring);background:var(--slb-blue-100)}
     .card .body{padding:16px}
-
     .unit-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
     .unit-row label{font-weight:700;font-size:var(--fs-label)}
     .help{margin:4px 0 0;font-size:var(--fs-help);color:var(--ink-500);flex-basis:100%}
-
     .unit-toggle{display:flex;gap:6px;background:#fff;border:1px solid var(--ring);border-radius:999px;padding:6px}
     .unit-toggle button{border:0;padding:10px 14px;border-radius:999px;background:transparent;cursor:pointer;font-weight:700;color:#003E7E;font-size:14px}
     .unit-toggle button.active{background:var(--slb-blue-100)}
-
-    .fields-grid{
-      display:grid; gap:14px; margin-top:8px;
-      grid-template-columns: repeat(auto-fill, minmax(var(--col-min), var(--col-max)));
-      justify-content:start;
-    }
+    .fields-grid{display:grid;gap:14px;margin-top:8px;grid-template-columns:repeat(auto-fill,minmax(var(--col-min),var(--col-max)));justify-content:start}
     .field-group{display:flex;flex-direction:column;gap:6px}
     .field-group label{font-weight:700;font-size:var(--fs-label)}
-
-    .field{
-      display:grid; grid-template-columns: 1fr auto; align-items:center;
-      height:var(--control-h); background:#fff; border:1px solid var(--ring); border-radius:12px; overflow:hidden;
-      transition:border-color .15s ease;
-    }
+    .field{display:grid;grid-template-columns:1fr auto;align-items:center;height:var(--control-h);background:#fff;border:1px solid var(--ring);border-radius:12px;overflow:hidden;transition:border-color .15s ease}
     .field:focus-within{border-color:var(--slb-blue-700)}
-
-    .field input[type="number"]{
-      width:100%; min-width:0; border:0; outline:none; height:100%;
-      padding:0 8px; background:#fff; color:#0B1324;
-      font-size:var(--fs-body); font-weight:700; line-height:1;
-      text-align:left; font-variant-numeric:tabular-nums;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-    }
+    .field input[type="number"]{width:100%;min-width:0;border:0;outline:none;height:100%;padding:0 8px;background:#fff;color:#0B1324;font-size:var(--fs-body);font-weight:700;line-height:1;text-align:left;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     .field input::placeholder{color:#97A3B6}
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+    input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
     input[type=number]{-moz-appearance:textfield}
-
-    .suffix,.unit-select{
-      align-self:stretch; display:flex; align-items:center; justify-content:center;
-      padding:0 8px; border-left:1px solid var(--ring);
-      background:#EEF5FF; color:#003E7E;
-      font-weight:700; font-size:15px; white-space:nowrap; text-align:center;
-    }
-    .unit-select select{
-      border:0; background:transparent; outline:none; cursor:pointer;
-      height:100%; min-width:var(--chip-minw);
-      font:inherit; color:inherit; line-height:1;
-      text-align:center; text-align-last:center; appearance:none;
-    }
-
+    .suffix,.unit-select{align-self:stretch;display:flex;align-items:center;justify-content:center;padding:0 8px;border-left:1px solid var(--ring);background:#EEF5FF;color:#003E7E;font-weight:700;font-size:15px;white-space:nowrap;text-align:center}
+    .unit-select select{border:0;background:transparent;outline:none;cursor:pointer;height:100%;min-width:var(--chip-minw);font:inherit;color:inherit;line-height:1;text-align:center;text-align-last:center;appearance:none}
     .actions{display:flex;gap:10px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--ring);background:#FBFDFF}
     .btn{appearance:none;border:1px solid var(--slb-blue-700);color:#fff;background:var(--slb-blue-700);padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
     .btn.secondary{background:#fff;color:#005FB8}
     .btn.sm{padding:6px 10px;font-size:12px;border-radius:8px}
-
     details.preview{max-width:1280px;margin:16px auto 24px;padding:0 16px}
     details.preview>summary{list-style:none;cursor:pointer;padding:14px 16px;background:var(--slb-blue-100);color:#003E7E;font-weight:700;border:1px solid var(--ring);border-radius:var(--radius)}
     details.preview>summary::-webkit-details-marker{display:none}
     details.preview pre{margin:8px 0 0;padding:14px;font-size:12px;line-height:1.4;overflow:auto;white-space:pre;background:#0B1220;color:#E8F2FB;border-radius:10px}
-
     .schematic-wrap{padding:12px}
-    #schematic{
-      width:100%; height:var(--schematic-h); display:block; background:#fff;
-      border:1px solid var(--ring); border-radius:12px;
-    }
-
-    .ns{ vector-effect: non-scaling-stroke; }
-    .halo{ paint-order: stroke; stroke:#fff; stroke-width:4px; }
-    .wedge{ stroke:#005FB8; stroke-width:3; stroke-linecap:round; fill:none; }
+    #schematic{width:100%;height:var(--schematic-h);display:block;background:#fff;border:1px solid var(--ring);border-radius:12px}
+    .ns{vector-effect:non-scaling-stroke}
+    .halo{paint-order:stroke;stroke:#fff;stroke-width:4px}
+    .wedge{stroke:#005FB8;stroke-width:3;stroke-linecap:round;fill:none}
   </style>
 </head>
 <body>
@@ -172,7 +121,8 @@
             <div class="help">Horizontal map distance from the wellhead to the target location.</div>
           </div>
 
-          <div class="field-group">
+          <!-- Will hide/show as a whole -->
+          <div class="field-group" id="group_kop">
             <label for="kickoff_point">Kickoff point</label>
             <div class="field">
               <input id="kickoff_point" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 600" />
@@ -181,7 +131,8 @@
             <div class="help">Measured depth where the wellpath starts the build (curved) section.</div>
           </div>
 
-          <div class="field-group">
+          <!-- Will hide/show as a whole -->
+          <div class="field-group" id="group_dls">
             <label for="dls_limit">DLS limit</label>
             <div class="field">
               <input id="dls_limit" type="number" min="0" step="0.01" inputmode="decimal" placeholder="e.g. 4" />
@@ -219,8 +170,8 @@
             <line class="ns" x1="140" y1="64" x2="520" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="330" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
 
-            <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
-            <path class="ns" d="M 140 260 L 520 440" stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+            <!-- OFF: one clean incline from wellhead to target -->
+            <path class="ns" d="M 140 80 L 520 440" stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
             <g transform="translate(520,440)">
               <circle r="7" stroke="#005FB8" stroke-width="2" fill="none"></circle>
@@ -228,13 +179,6 @@
               <line x1="0" y1="-9" x2="0" y2="9" stroke="#005FB8" stroke-width="2"></line>
             </g>
             <text class="halo" x="534" y="428" font-size="12" fill="#0B1324">Target</text>
-
-            <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
-            <path class="wedge ns" d="M 140 260 L 140 292" />
-            <path class="wedge ns" d="M 140 260 L 160 269" />
-            <path class="wedge ns" d="M 140 282 A 22 22 0 0 1 160 269" />
-            <text class="halo" x="158" y="285" font-size="11" fill="#003E7E">Inclination (DLS)</text>
-            <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
 
           <!-- ===== Mode B: OPTIMIZED S-SHAPE (modelling ON) ===== -->
@@ -242,13 +186,14 @@
             <line class="ns" x1="140" y1="64" x2="430" y2="64" stroke="#005FB8" stroke-width="2" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
             <text class="halo" x="285" y="50" text-anchor="middle" font-size="12" fill="#003E7E">Horizontal step-out</text>
 
-            <path class="ns" d="M 140 80 L 140 260" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
+            <!-- shorter vertical kickoff -->
+            <path class="ns" d="M 140 80 L 140 220" stroke="#005FB8" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
-            <!-- I steepen the first control to increase the initial tangent angle -->
+            <!-- re-anchored S-curve -->
             <path class="ns" d="
-              M 140 260
-              C 195 340, 210 420, 280 440
-              C 340 457, 395 462, 430 455
+              M 140 220
+              C 185 300, 210 400, 280 440
+              C 340 460, 395 465, 430 455
             " stroke="#003E7E" stroke-width="3.5" stroke-linecap="round" fill="none"></path>
 
             <g transform="translate(430,455)">
@@ -258,16 +203,16 @@
             </g>
             <text class="halo" x="444" y="443" font-size="12" fill="#0B1324">Target</text>
 
-            <circle cx="140" cy="260" r="4" fill="#005FB8"></circle>
-            <path class="wedge ns" d="M 140 260 L 140 294" />
-            <!-- Tangent ray uses (55,80); I match its slope with dx≈22 for dy≈32 -->
-            <path class="wedge ns" d="M 140 260 L 162 292" />
-            <path class="wedge ns" d="M 140 284 A 24 24 0 0 1 158 292" />
-            <text class="halo" x="168" y="298" font-size="11" fill="#003E7E">Inclination (DLS)</text>
-            <text class="halo" x="124" y="262" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
+            <!-- KOP marker & wedge at new depth -->
+            <circle cx="140" cy="220" r="4" fill="#005FB8"></circle>
+            <path class="wedge ns" d="M 140 220 L 140 254" />
+            <path class="wedge ns" d="M 140 220 L 162 252" />
+            <path class="wedge ns" d="M 140 244 A 24 24 0 0 1 158 252" />
+            <text class="halo" x="168" y="258" font-size="11" fill="#003E7E">Inclination (DLS)</text>
+            <text class="halo" x="124" y="222" text-anchor="end" font-size="12" fill="#0B1324">Kickoff point (KOP)</text>
           </g>
 
-          <!-- I draw the Wellhead label last so it always sits on top -->
+          <!-- Keep Wellhead label on top -->
           <text class="halo" x="140" y="58" text-anchor="middle" font-size="12" fill="#0B1324">Wellhead</text>
         </svg>
       </div>
@@ -281,34 +226,23 @@
 
   <script>
     const UOM = {
-      length: {
-        metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:m:",
-        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:ft:"
-      },
-      cost: {
-        metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fm:",
-        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fft:"
-      },
-      tubingInch: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:in:",
-      dls: {
-        metric: "slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:1%2F30%20dega%2Fm:",
-        imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:0.01%20dega%2Fft:"
-      }
+      length:{metric:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:m:",imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:ft:"},
+      cost:{metric:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fm:",imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:USD%2Fft:"},
+      tubingInch:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:in:",
+      dls:{metric:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:1%2F30%20dega%2Fm:",imperial:"slb-osdu-dev-sis-internal-hq:reference-data--UnitOfMeasure:0.01%20dega%2Fft:"}
     };
 
     const defaults = {
-      unitSystem: "metric",
-      well_trajectory_modelling: true,
-      well_unit_cost: 15500,
-      tubing_size: 6.625,
-      horizontal_step_out: 800,
-      kickoff_point: 600,
-      dls_limit: 4
+      unitSystem:"metric",
+      well_trajectory_modelling:true,
+      well_unit_cost:15500,
+      tubing_size:6.625,
+      horizontal_step_out:800,
+      kickoff_point:600,
+      dls_limit:4
     };
 
-    const M_PER_FT = 0.3048, FT_PER_M = 1 / M_PER_FT;
-    const DLS_M_TO_FT = 100 / (30 * FT_PER_M);
-    const DLS_FT_TO_M = 1 / DLS_M_TO_FT;
+    const M_PER_FT=0.3048, FT_PER_M=1/M_PER_FT, DLS_M_TO_FT=100/(30*FT_PER_M), DLS_FT_TO_M=1/DLS_M_TO_FT;
 
     const state = JSON.parse(JSON.stringify(defaults));
 
@@ -332,8 +266,11 @@
     const schemCard   = document.getElementById('schemCard');
     const mainGrid    = document.getElementById('mainGrid');
 
-    function clampNonNeg(n){ return Math.max(0, Number(n) || 0); }
-    function roundNum(v,d){ const f=Math.pow(10,d); return Math.round((Number(v)||0)*f)/f; }
+    const kopGroup = document.getElementById('group_kop');
+    const dlsGroup = document.getElementById('group_dls');
+
+    function clampNonNeg(n){ return Math.max(0, Number(n)||0); }
+    function roundNum(v,d){ const f=10**d; return Math.round((Number(v)||0)*f)/f; }
 
     function buildPayload(){
       const isMetric = state.unitSystem === "metric";
@@ -353,9 +290,7 @@
         dls_limit_measurement: isMetric ? UOM.dls.metric : UOM.dls.imperial
       };
     }
-    function renderJSON(){
-      jsonPreview.textContent = JSON.stringify(buildPayload(), null, 2);
-    }
+    function renderJSON(){ jsonPreview.textContent = JSON.stringify(buildPayload(), null, 2); }
 
     function setUnitSystem(target){
       if(target === state.unitSystem) return;
@@ -375,14 +310,26 @@
       syncInputsFromState();
     }
 
+    function setGroupVisible(group, visible){
+      if(!group) return;
+      group.style.display = visible ? '' : 'none';           // simple + predictable
+      group.querySelectorAll('input,select,button').forEach(el => el.disabled = !visible); // avoid stray focus
+    }
+
     function updateSchematicMode(){
       const on = !!state.well_trajectory_modelling;
+
+      // swap schematic groups
       const simple = document.getElementById("schem-simple");
       const optim  = document.getElementById("schem-optim");
       if(simple && optim){
         simple.style.display = on ? "none" : "block";
         optim.style.display  = on ? "block" : "none";
       }
+
+      // hide/show left-panel params
+      setGroupVisible(kopGroup, on);
+      setGroupVisible(dlsGroup, on);
     }
 
     function syncInputsFromState(){
@@ -460,7 +407,7 @@
 
     (function init(){
       Object.assign(state, JSON.parse(JSON.stringify(defaults)));
-      syncInputsFromState();
+      syncInputsFromState();   // ensures correct initial UI and schematic state
       setSchematicVisible(true);
     })();
   </script>
